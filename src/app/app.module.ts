@@ -8,6 +8,10 @@ import { BookComponent } from './book/book.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { ShowcaseComponent } from './showcase/showcase.component';
 import { SearchComponent } from './search/search.component';
+import {HttpClientModule} from '@angular/common/http';
+import {BooksService} from './services/books.service';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {HttpService} from './services/http.service';
 
 @NgModule({
   declarations: [
@@ -20,9 +24,12 @@ import { SearchComponent } from './search/search.component';
   imports: [
     AppRoutingModule,
     BrowserModule,
-    RouterModule
+    RouterModule,
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
-  providers: [],
+  providers: [BooksService, HttpService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

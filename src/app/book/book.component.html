@@ -1,48 +1,65 @@
 <div class="form-wrapper">
 
-  <form>
+  <form [formGroup]="bookForm">
 
     <h3 class="mb-4">Book Info</h3>
 
     <div class="form-group">
       <label for="author">Author</label>
-      <input class="form-control" id="author">
+      <input
+        class="form-control"
+        id="author"
+        formControlName="author">
     </div>
 
     <div class="form-group">
       <label for="title">Title</label>
-      <input class="form-control" id="title">
+      <input
+        class="form-control"
+        id="title"
+        formControlName="title"
+      >
     </div>
 
     <div class="form-group">
       <label for="isbn">ISBN</label>
-      <input class="form-control" id="isbn">
+      <input
+        class="form-control"
+        id="isbn"
+        formControlName="isbn"
+      >
     </div>
 
     <div class="form-group">
       <label for="pages">Number of Pages</label>
-      <input class="form-control" id="pages">
+      <input
+        class="form-control"
+        id="pages"
+        formControlName="pages"
+      >
     </div>
 
     <div class="form-group">
       <label for="format">Format</label>
-      <select class="form-control" id="format">
-        <option>Paperback</option>
-        <option>Hardcover</option>
-        <option>Audiobook</option>
-        <option>Leather Bound</option>
-        <option>Spiral Bound</option>
+      <select class="form-control" id="format" formControl="format">
+        <option *ngFor="">Paperback</option>
       </select>
     </div>
 
     <div class="form-group">
       <label for="description">Description</label>
-      <textarea class="form-control" id="description" rows="3"></textarea>
+      <textarea class="form-control"
+                id="description"
+                rows="3"
+                formControlName="description"
+      ></textarea>
     </div>
 
     <div class="form-group">
       <label for="price">Price</label>
-      <input class="form-control" id="price">
+      <input class="form-control"
+             id="price"
+             formControlName="price">
     </div>
 
     <hr class="m-1 mb-5 mt-5">
@@ -51,32 +68,32 @@
 
     <div class="form-group">
       <label for="country">Country</label>
-      <select class="form-control" id="country">
-        <option>Country #1</option>
-        <option>Country #2</option>
-        <option>Country #3</option>
+      <select class="form-control"
+              id="country"
+              formControlName="country">
+        <option *ngFor="let country of countries" [value]="country" [selected]="country?.name">{{country?.name}}</option>
       </select>
     </div>
 
     <div class="form-group">
       <label for="city">City</label>
-      <select class="form-control" id="city">
-        <option>City #1</option>
-        <option>City #2</option>
-        <option>City #3</option>
+      <select class="form-control"
+              id="city"
+              formControlName="city">
+        <option *ngFor="let city of cities" [value]="city.name" [selected]="city?.name">{{city?.name}}</option>
       </select>
     </div>
 
     <div class="form-group">
       <label for="company">Company</label>
-      <select class="form-control" id="company">
-        <option>Company #1</option>
-        <option>Company #2</option>
-        <option>Company #3</option>
+      <select class="form-control"
+              id="company"
+              formControlName="company">
+        <option *ngFor="let company of companies" [value]="company.name" [selected]="company?.name">{{company?.name}}</option>
       </select>
     </div>
 
-    <button type="submit" class="btn btn-primary mt-4">Submit</button>
+    <button type="submit" class="btn btn-primary mt-4" [disabled]="bookForm.invalid" (click)="formSubmit()">Submit</button>
 
   </form>
 
