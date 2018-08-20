@@ -41,8 +41,8 @@
 
     <div class="form-group">
       <label for="format">Format</label>
-      <select class="form-control" id="format" formControl="format">
-        <option *ngFor="">Paperback</option>
+      <select class="form-control" id="format" formControlName="format">
+        <option *ngFor="let format of formats" [value]="format.name" [selected]="format?.name">{{format?.name}}</option>
       </select>
     </div>
 
@@ -71,7 +71,7 @@
       <select class="form-control"
               id="country"
               formControlName="country">
-        <option *ngFor="let country of countries" [value]="country" [selected]="country?.name">{{country?.name}}</option>
+        <option *ngFor="let country of countries" [selected]="country.name" [value]="country.name">{{country?.name}}</option>
       </select>
     </div>
 

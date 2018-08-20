@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import {BooksService} from '../services/books.service';
-import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-showcase',
