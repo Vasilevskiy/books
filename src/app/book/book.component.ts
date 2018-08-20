@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router, RouterState, RouterStateSnapshot} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {BooksService} from '../services/books.service';
-import {FormControl, FormGroup} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {HttpService} from '../services/http.service';
 import {City} from '../interfaces/city';
 import {Country} from '../interfaces/country';
@@ -29,9 +29,15 @@ export class BookComponent implements OnInit {
 
   public selectedBook: Book;
   public countries: Country[] = [];
+  public choosenCountry: Country;
+  public choosenCity: City;
+  public choosenCompany: Company;
   public cities: City[] = [];
+  public availableCities: City[] = [];
   public companies: Company[] = [];
+  public availableCompanies: Company[] = [];
   public formats = [];
+  public availableFormats = [];
   public bookForm: FormGroup;
   public selectedId: number;
 
@@ -41,16 +47,16 @@ export class BookComponent implements OnInit {
               private http: HttpService
   ) {
     this.bookForm = new FormGroup({
-      'author': new FormControl(''),
-      'title': new FormControl(''),
-      'isbn': new FormControl(''),
-      'pages': new FormControl(''),
-      'description': new FormControl(''),
-      'format': new FormControl(''),
-      'price': new FormControl(''),
-      'company': new FormControl(''),
-      'city': new FormControl(''),
-      'country': new FormControl(''),
+      'author': new FormControl('', Validators.required),
+      'title': new FormControl('', Validators.required),
+      'isbn': new FormControl('', Validators.required),
+      'pages': new FormControl(0, Validators.required),
+      'description': new FormControl('', Validators.required),
+      'formatId': new FormControl(0, Validators.required),
+      'price': new FormControl(0, Validators.required),
+      'companyId': new FormControl(0, Validators.required),
+      'cityId': new FormControl(0, Validators.required),
+      'countryId': new FormControl(0, Validators.required),
     });
     this.selectedId = this.activeRoute.snapshot.params['id'];
     this.countries = this.activeRoute.snapshot.data.countries;
@@ -60,42 +66,90 @@ export class BookComponent implements OnInit {
   }
 
   setCountry() {
-    const country = this.countries.filter( value => {
-      if (this.selectedBook.countryId === value.id) {
+    this.countries = this.countries.filter(value => {
+      if (+this.selectedBook.countryId === value.id) {
         return value;
       }
     });
-    this.bookForm.get('country').setValue(country[0].name);
+    this.bookForm.get('countryId').setValue(this.countries[0].name);
+
+  }
+
+  changeCountry(countryId) {
+    if (this.selectedId === undefined) {
+      this.countries.filter((country: Country) => {
+        if (country.id === +countryId) {
+          console.log(typeof +countryId)
+          this.choosenCountry = country;
+          console.log(this.choosenCountry);
+        }
+      });
+      this.availableCities = this.cities.filter(city => {
+        if (city.countryId === this.choosenCountry.id) {
+          return city;
+        }
+      });
+      console.log(this.availableCities);
+      console.log(this.availableCompanies);
+    }
   }
 
   setCity() {
-    const city = this.cities.filter( value => {
-      if (this.selectedBook.cityId === value.id) {
-        return value;
+    this.cities.filter(value => {
+      if (+this.selectedBook.cityId === value.id) {
+        this.availableCities.push(value);
+        this.bookForm.get('cityId').setValue(value.name);
       }
     });
-    this.bookForm.get('city').setValue(city[0].name);
+  }
+
+  changeCity(cityId) {
+    if (this.selectedId === undefined) {
+      console.log(cityId);
+      this.availableCities.map((city: City) => {
+        if (city.id === +cityId) {
+          this.choosenCity = city;
+          console.log(this.choosenCity);
+        }
+      });
+      this.availableCompanies = this.companies.filter(company => {
+        if (company.cityId === this.choosenCity.id) {
+          return company;
+        }
+      });
+      console.log(this.availableCompanies);
+    }
   }
 
   setCompany() {
-    const company = this.companies.filter( value => {
-      if (this.selectedBook.companyId === value.id) {
-        return value;
+    this.companies.map(value => {
+      if (+this.selectedBook.companyId === value.id) {
+        this.availableCompanies.push(value);
+        this.bookForm.get('companyId').setValue(value.name);
+        return;
       }
     });
-    this.bookForm.get('company').setValue(company[0].name);
+  }
+
+  changeCompany(companyId) {
+    if (this.selectedId === undefined) {
+      this.companies.map(company => {
+        if (company.id === companyId.id) {
+          this.choosenCompany = company;
+        }
+      });
+    }
   }
 
   setFormat() {
-    const format = this.formats.filter( value => {
-      if (this.selectedBook.formatId === value.id) {
-        console.log(value);
+    this.formats = this.formats.filter(value => {
+      if (+this.selectedBook.formatId === value.id) {
+        this.bookForm.get('formatId').setValue(value.name);
         return value;
       }
     });
-    console.log(this.formats);
-    this.bookForm.get('format').setValue(format[0].name);
   }
+
   ngOnInit() {
     if (this.selectedId !== undefined) {
       this.books.getBook(this.selectedId).subscribe((res: any) => {
@@ -105,27 +159,18 @@ export class BookComponent implements OnInit {
         this.setCity();
         this.setCompany();
         this.setFormat();
-        console.log(this.bookForm.getRawValue());
-      });
-    } else {
-      this.http.getCountries().subscribe( (items: Array<any>) => {
-        this.countries = items;
-        this.bookForm.get('country').setValue(this.countries[this.countries.length - 1].id);
-      });
-
-      this.http.getCities().subscribe( (items: Array<any>) => {
-        const countryId = this.bookForm.getRawValue().country;
-          items.filter(item => {
-            if (item.countryId === countryId) {
-              this.cities.push(item);
-            }
-        });
       });
     }
   }
 
+  goBack() {
+    this.router.navigate(['/']);
+  }
+
   formSubmit() {
-    console.log(this.bookForm.getRawValue());
+    this.books.pushNewBook(this.bookForm.getRawValue()).subscribe(success => {
+      this.router.navigate(['/']);
+    });
   }
 
 }

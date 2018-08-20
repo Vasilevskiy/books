@@ -25,7 +25,11 @@ const routes: Routes = [
       countries: CountriesResolver,
       formats: FormatsResolver}
     },
-  { path: 'search', component: SearchComponent },
+  { path: 'search', component: SearchComponent,
+    resolve: {
+      formats: FormatsResolver
+    }
+  },
   { path: '**', redirectTo: '/showcase', pathMatch: 'full' }
 ];
 

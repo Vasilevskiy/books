@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-search',
@@ -6,7 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SearchComponent implements OnInit {
 
-  constructor() { }
+  public formats = [];
+  public searchForm: FormGroup;
+
+  constructor(private activeRoute: ActivatedRoute) {
+    this.formats = this.activeRoute.snapshot.data.formats;
+  }
 
   ngOnInit() {
   }

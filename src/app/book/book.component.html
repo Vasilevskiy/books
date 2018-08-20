@@ -9,7 +9,9 @@
       <input
         class="form-control"
         id="author"
-        formControlName="author">
+        formControlName="author"
+        [disabled]="selectedId">
+      <p class="error" *ngIf="bookForm.get('author').touched && bookForm.get('author').invalid">You need to write author</p>
     </div>
 
     <div class="form-group">
@@ -19,6 +21,8 @@
         id="title"
         formControlName="title"
       >
+      <p class="error" *ngIf="bookForm.get('title').touched && bookForm.get('title').invalid">You need to write title</p>
+
     </div>
 
     <div class="form-group">
@@ -28,22 +32,30 @@
         id="isbn"
         formControlName="isbn"
       >
+      <p class="error" *ngIf="bookForm.get('isbn').touched && bookForm.get('isbn').invalid">You need to write isbn</p>
+
     </div>
 
     <div class="form-group">
       <label for="pages">Number of Pages</label>
       <input
+        type="number"
         class="form-control"
         id="pages"
         formControlName="pages"
       >
+      <p class="error" *ngIf="bookForm.get('pages').touched && bookForm.get('pages').invalid">You need to write number of pages</p>
+
     </div>
 
     <div class="form-group">
       <label for="format">Format</label>
-      <select class="form-control" id="format" formControlName="format">
-        <option *ngFor="let format of formats" [value]="format.name" [selected]="format?.name">{{format?.name}}</option>
+      <select class="form-control" id="format" formControlName="formatId" [disabled]="selectedId">
+        <option value="" [selected]=true [disabled]="true">Select Format</option>
+        <option *ngFor="let format of formats" [value]="+format.id" [selected]="format?.name">{{format?.name}}</option>
       </select>
+      <p class="error" *ngIf="bookForm.get('formatId').touched && bookForm.get('formatId').invalid">You need to select format</p>
+
     </div>
 
     <div class="form-group">
@@ -53,13 +65,18 @@
                 rows="3"
                 formControlName="description"
       ></textarea>
+      <p class="error" *ngIf="bookForm.get('description').touched && bookForm.get('description').invalid">You need to write description</p>
+
     </div>
 
     <div class="form-group">
       <label for="price">Price</label>
       <input class="form-control"
+             type="number"
              id="price"
              formControlName="price">
+      <p class="error" *ngIf="bookForm.get('price').touched && bookForm.get('price').invalid">You need to write price</p>
+
     </div>
 
     <hr class="m-1 mb-5 mt-5">
@@ -70,30 +87,45 @@
       <label for="country">Country</label>
       <select class="form-control"
               id="country"
-              formControlName="country">
-        <option *ngFor="let country of countries" [selected]="country.name" [value]="country.name">{{country?.name}}</option>
+              formControlName="countryId"
+              (change)="changeCountry($event.target.value)">
+        <option value="" [selected]=true [disabled]="true">Select Country</option>
+        <option *ngFor="let country of countries" [value]="country.id" [selected]="country.name">{{country.name}}</option>
       </select>
+      <p class="error" *ngIf="bookForm.get('countryId').touched && bookForm.get('countryId').invalid">You need to select country</p>
+
     </div>
 
     <div class="form-group">
       <label for="city">City</label>
       <select class="form-control"
               id="city"
-              formControlName="city">
-        <option *ngFor="let city of cities" [value]="city.name" [selected]="city?.name">{{city?.name}}</option>
+              formControlName="cityId"
+              (change)="changeCity($event.target.value)">
+        <option value="" [selected]=true [disabled]="true">Select City</option>
+        <option *ngFor="let city of availableCities" [value]="+city.id" [selected]="city?.name">{{city?.name}}</option>
       </select>
+      <p class="error" *ngIf="bookForm.get('cityId').touched && bookForm.get('cityId').invalid">You need to select city</p>
+
     </div>
 
     <div class="form-group">
       <label for="company">Company</label>
       <select class="form-control"
               id="company"
-              formControlName="company">
-        <option *ngFor="let company of companies" [value]="company.name" [selected]="company?.name">{{company?.name}}</option>
+              formControlName="companyId"
+              (change)="changeCompany($event.target.value)">
+        <option value="" [selected]=true [disabled]="true">Select Company</option>
+        <option *ngFor="let company of availableCompanies" [value]="+company.id" [selected]="company?.name">{{company?.name}}</option>
       </select>
+      <p class="error" *ngIf="bookForm.get('companyId').touched && bookForm.get('companyId').invalid">You need to select company</p>
+
     </div>
 
-    <button type="submit" class="btn btn-primary mt-4" [disabled]="bookForm.invalid" (click)="formSubmit()">Submit</button>
+    <ng-template #submitBtn>
+      <button type="submit" class="btn btn-primary mt-4" (click)="formSubmit()" [disabled]="selectedId || bookForm.invalid">Submit</button>
+    </ng-template>
+    <button type="submit" class="btn btn-primary mt-4" (click)="goBack()" *ngIf="selectedId; else submitBtn">Back</button>
 
   </form>
 

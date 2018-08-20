@@ -24,7 +24,7 @@
       "companyId": 25,
       "formatId": 2,
       "description": "Twice amended to bring it to documentary decorum and the kind of textual completion Proust himself could never achieve.",
-      "price": 321.00
+      "price": 321
     },
     {
       "id": 3,
@@ -50,7 +50,7 @@
       "companyId": 14,
       "formatId": 4,
       "description": " The hardback is stitched and bound to keep, so it is worth your money.",
-      "price": 777.00
+      "price": 777
     }
   ],
   "formats": [

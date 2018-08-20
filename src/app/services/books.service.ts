@@ -20,4 +20,8 @@ export class BooksService {
   getBook(id) {
     return this.http.get(this.booksUrl + id, {headers: this.headers});
   }
+
+  pushNewBook(book) {
+    return this.http.post(this.booksUrl, book, {headers: this.headers});
+  }
 }
