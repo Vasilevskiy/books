@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BooksService} from '../services/books.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {HttpService} from '../services/http.service';
 import {City} from '../interfaces/city';
 import {Country} from '../interfaces/country';
 import {Company} from '../interfaces/company';
@@ -37,14 +36,12 @@ export class BookComponent implements OnInit {
   public companies: Company[] = [];
   public availableCompanies: Company[] = [];
   public formats = [];
-  public availableFormats = [];
   public bookForm: FormGroup;
   public selectedId: number;
 
   constructor(private activeRoute: ActivatedRoute,
               private router: Router,
               private books: BooksService,
-              private http: HttpService
   ) {
     this.bookForm = new FormGroup({
       'author': new FormControl('', Validators.required),
@@ -65,8 +62,8 @@ export class BookComponent implements OnInit {
     this.formats = this.activeRoute.snapshot.data.formats;
   }
 
-  setCountry() {
-    this.countries = this.countries.filter(value => {
+  setCountry(): void {
+    this.countries = this.countries.filter((value: Country) => {
       if (+this.selectedBook.countryId === value.id) {
         return value;
       }
@@ -75,13 +72,11 @@ export class BookComponent implements OnInit {
 
   }
 
-  changeCountry(countryId) {
+  changeCountry(countryId: number): void {
     if (this.selectedId === undefined) {
       this.countries.filter((country: Country) => {
         if (country.id === +countryId) {
-          console.log(typeof +countryId)
           this.choosenCountry = country;
-          console.log(this.choosenCountry);
         }
       });
       this.availableCities = this.cities.filter(city => {
@@ -89,13 +84,11 @@ export class BookComponent implements OnInit {
           return city;
         }
       });
-      console.log(this.availableCities);
-      console.log(this.availableCompanies);
     }
   }
 
-  setCity() {
-    this.cities.filter(value => {
+  setCity(): void {
+    this.cities.filter((value: City) => {
       if (+this.selectedBook.cityId === value.id) {
         this.availableCities.push(value);
         this.bookForm.get('cityId').setValue(value.name);
@@ -103,13 +96,11 @@ export class BookComponent implements OnInit {
     });
   }
 
-  changeCity(cityId) {
+  changeCity(cityId: number): void {
     if (this.selectedId === undefined) {
-      console.log(cityId);
       this.availableCities.map((city: City) => {
         if (city.id === +cityId) {
           this.choosenCity = city;
-          console.log(this.choosenCity);
         }
       });
       this.availableCompanies = this.companies.filter(company => {
@@ -117,12 +108,11 @@ export class BookComponent implements OnInit {
           return company;
         }
       });
-      console.log(this.availableCompanies);
     }
   }
 
-  setCompany() {
-    this.companies.map(value => {
+  setCompany(): void {
+    this.companies.map((value: Company) => {
       if (+this.selectedBook.companyId === value.id) {
         this.availableCompanies.push(value);
         this.bookForm.get('companyId').setValue(value.name);
@@ -131,17 +121,17 @@ export class BookComponent implements OnInit {
     });
   }
 
-  changeCompany(companyId) {
+  changeCompany(companyId: number): void {
     if (this.selectedId === undefined) {
-      this.companies.map(company => {
-        if (company.id === companyId.id) {
+      this.companies.map((company: Company) => {
+        if (company.id === companyId) {
           this.choosenCompany = company;
         }
       });
     }
   }
 
-  setFormat() {
+  setFormat(): void {
     this.formats = this.formats.filter(value => {
       if (+this.selectedBook.formatId === value.id) {
         this.bookForm.get('formatId').setValue(value.name);
@@ -152,7 +142,7 @@ export class BookComponent implements OnInit {
 
   ngOnInit() {
     if (this.selectedId !== undefined) {
-      this.books.getBook(this.selectedId).subscribe((res: any) => {
+      this.books.getBook(this.selectedId).subscribe((res: Book) => {
         this.selectedBook = res;
         this.bookForm.patchValue(this.selectedBook);
         this.setCountry();
@@ -163,12 +153,12 @@ export class BookComponent implements OnInit {
     }
   }
 
-  goBack() {
+  goBack(): void {
     this.router.navigate(['/']);
   }
 
-  formSubmit() {
-    this.books.pushNewBook(this.bookForm.getRawValue()).subscribe(success => {
+  formSubmit(): void {
+    this.books.pushNewBook(this.bookForm.getRawValue()).subscribe(() => {
       this.router.navigate(['/']);
     });
   }

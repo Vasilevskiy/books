@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {BooksService} from '../services/books.service';
+import {Book} from '../interfaces/book';
 
 @Component({
   selector: 'app-showcase',
@@ -13,9 +14,8 @@ export class ShowcaseComponent implements OnInit {
   public booksArray = [];
 
   ngOnInit() {
-    this.books.getBooks().subscribe((res: Array<{}>) => {
+    this.books.getBooks().subscribe((res: Book[]) => {
       this.booksArray = res;
-      console.log(this.booksArray);
     });
   }
 

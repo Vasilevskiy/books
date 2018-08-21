@@ -1,5 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Observable} from 'rxjs/Observable';
+import {Book} from '../interfaces/book';
 
 @Injectable()
 export class BooksService {
@@ -13,15 +15,15 @@ export class BooksService {
   }
 
 
-  getBooks() {
+  getBooks(): Observable<any> {
     return this.http.get(this.booksUrl, {headers: this.headers});
   }
 
-  getBook(id) {
+  getBook(id): Observable<any> {
     return this.http.get(this.booksUrl + id, {headers: this.headers});
   }
 
-  pushNewBook(book) {
+  pushNewBook(book): Observable<Book> {
     return this.http.post(this.booksUrl, book, {headers: this.headers});
   }
 }
